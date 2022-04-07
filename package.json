@@ -1,0 +1,25 @@
+{
+  "name": "clark_3dot0",
+  "version": "1.0.0",
+  "description": "Bringing Web3 (GUNjs) to Clark University",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WearsomeKarma/clark3.0.git"
+  },
+  "author": "Darius Grauslys Mahdi Boulila",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WearsomeKarma/clark3.0/issues"
+  },
+  "homepage": "https://github.com/WearsomeKarma/clark3.0#readme",
+  "dependencies": {
+    "express": "^4.17.3",
+    "gun": "^0.2020.1236",
+    "mongodb": "^4.5.0",
+    "nodejs": "^0.0.0"
+  }
+}
