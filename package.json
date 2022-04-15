@@ -18,8 +18,13 @@
   "homepage": "https://github.com/WearsomeKarma/clark3.0#readme",
   "dependencies": {
     "express": "^4.17.3",
+    "express-session": "^1.17.2",
     "gun": "^0.2020.1236",
+    "gun-mongo": "^0.1.2",
     "mongodb": "^4.5.0",
-    "nodejs": "^0.0.0"
+    "mongoose": "^6.3.0",
+    "nodejs": "^0.0.0",
+    "passport": "^0.5.2",
+    "passport-local-mongoose": "^7.0.0"
   }
 }
