@@ -7,10 +7,20 @@
     --safety-yellow: #f1d302ff;
 }
 
-html{
-    background-color: red;
+.main_background {
+    background-color: var(--spanish-gray);
 }
 
+h2 {
+    color: black;
+}
 .cropped{
-    width: 200px;
+    width: 250px;
+    height: 900px;
+    object-fit: cover;
+    object-position: 20% 10%;
+}
+
+html, body {
+    background-color: var(--spanish-gray);
 }
