@@ -1,0 +1,16 @@
+:root {
+    /* CSS HEX */
+    --celeste: #b9faf8ff;
+    --amaranth: #db324dff;
+    --dark-liver: #56494eff;
+    --spanish-gray: #a29c9bff;
+    --safety-yellow: #f1d302ff;
+}
+
+html{
+    background-color: red;
+}
+
+.cropped{
+    width: 200px;
+}
