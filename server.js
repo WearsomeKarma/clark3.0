@@ -50,12 +50,16 @@ const userSchema = new mongoose.Schema(
 
 const passport_user = mongoose.model('User', userSchema);
 
+app.listen(3000, function () {
+    console.log("server started at 3000");
+});
+
 app.get('/', function(req, res) {
-    res.sendFile("/index.html");
+    res.sendFile(__dirname + "/public/index.html")
 });
 
 app.get('/register', function(req, res){
-
+    res.sendFile(__dirname + "/public/register.html")
 });
 
 app.post('/register', function(req, res){
