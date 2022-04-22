@@ -41,7 +41,7 @@ app.use(passport.session());
 //Configure MongoDB and Schema
 mongoose.connect('mongodb://localhost:27017/gun', {useNewUrlParser: true, useUnifiedTopology: true});
 
-const userSchema = new mongoose.Schema(
+const user_schema = new mongoose.Schema(
     {
         username: {
             type: String,
@@ -56,7 +56,30 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-const passport_usermodel = mongoose.model('User', userSchema);
+const Passport_User_Model = mongoose.model('User', user_schema);
+
+const discussion_schema = new mongoose.Schema(
+    {
+        user_id: {
+            type: ObjectId,
+            required: true
+        },
+        video_url : {
+            type: String
+        },
+        comments : [
+            {
+                user_id: {
+                    type: ObjectId,
+                    required: true
+                },
+                content: String
+            }
+        ]
+    }
+);
+
+const Discussion_Model = mongoose.model('Dicussion', discussion_schema);
 
 app.listen(3000, function () {
     console.log("server started at 3000");
@@ -102,6 +125,21 @@ app.post('/register', function(req, res){
     }
 });
 
+function assert_session(req, res) {
+    const state = req.isAuthenticated();
+
+    if(!state){
+        res.send(
+            {
+                message: 'not-logged-in',
+                route  : '/login'
+            }
+        );
+    }
+
+    return state;
+}
+
 app.get('/login', function(req, res) {
     res.sendFile(__dirname + "/public/login.html");
 });
@@ -115,30 +153,33 @@ app.get('/user', function(req, res) {
 });
 
 app.get('/get_current_user', function(req, res) {
-    if (!req.isAuthenticated()){
-        res.send({message: "not-logged-in"});
+    if (assert_session(req, res))
         return;
-    }
 
-    return {message: "success", user:req.user};
+    res.send({message: "success", user:req.user});
 });
 
 app.get('/user_edit', function(req, res) {
-    //is_auth
-    if (!req.isAuthenticated()) {
-        res.send({ message: "not-logged-in"});
+    if (assert_session(req, res))
         return;
-    }
 
     res.sendFile(__dirname + 'user_edit.html');
 });
 
 app.get('/user_edit.js', function(req, res) {
+    if (assert_session(req, res))
+        return;
+
     res.sendFile(__dirname + '/user_edit.js');
 });
 
 app.get('/discussion', function(req, res) {
     
+});
+
+app.post('/post_reply', function(req, res) {
+    if (assert_session(req, res))
+        return;
 });
 
 app.get('/get_discussions', function(req, res) {
