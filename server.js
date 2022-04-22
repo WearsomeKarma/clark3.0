@@ -48,15 +48,16 @@ const user_schema = new mongoose.Schema(
             unique: true,
             required: true,
             minlength: 5
-        },
-        fullname: {
-            type: String,
-            required: true
         }
     }
 );
 
+user_schema.plugin(passlocal);
 const Passport_User_Model = mongoose.model('User', user_schema);
+
+passport.use(Passport_User_Model.createStrategy());
+passport.serializeUser(Passport_User_Model.serializeUser());
+passport.deserializeUser(Passport_User_Model.deserializeUser());
 
 const discussion_schema = new mongoose.Schema(
     {
@@ -103,16 +104,16 @@ app.post('/register', function(req, res){
     var fail_gun      = undefined;
 
     //register the same info on passport and gun.
-    user_gun.create(username, password, (msg) => {
+    user_gun.create(register.username, register.password, (msg) => {
         fail_gun = msg.err;
     });
 
     if (fail_gun){
-        res.send({message: fail_gun});
+        res.redirect('/register?error=' + fail_gun);
         return;
     }
 
-    passport_user.register(register, register.password, (error, user) => {
+    Passport_User_Model.register(register, register.password, (error, user) => {
         if (error){
             fail_passport = error;
             return;
@@ -120,9 +121,12 @@ app.post('/register', function(req, res){
     });
 
     if(fail_passport){
-        user_gun.delete(username, password);
-        res.send({message: fail_passport});
+        user_gun.delete(register.username, register.password);
+        res.redirect('/register?error=' + fail_passport);
+        return;
     }
+
+    res.redirect('/');
 });
 
 function assert_session(req, res) {
@@ -144,9 +148,12 @@ app.get('/login', function(req, res) {
     res.sendFile(__dirname + "/public/login.html");
 });
 
-app.post('/login', function(req, res) {
-    
-});
+app.post('/login', 
+    passport.authenticate('local', { failureRedirect: '/login?error=Username or password is invalid', failureMessage: true}), 
+    function (req, res){
+        res.redirect('/');
+    }    
+);
 
 app.get('/user', function(req, res) {
     
