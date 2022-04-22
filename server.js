@@ -61,7 +61,7 @@ const Passport_User_Model = mongoose.model('User', user_schema);
 const discussion_schema = new mongoose.Schema(
     {
         user_id: {
-            type: ObjectId,
+            type: mongoose.ObjectId,
             required: true
         },
         video_url : {
@@ -70,7 +70,7 @@ const discussion_schema = new mongoose.Schema(
         comments : [
             {
                 user_id: {
-                    type: ObjectId,
+                    type: mongoose.ObjectId,
                     required: true
                 },
                 content: String
