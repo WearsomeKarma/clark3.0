@@ -129,7 +129,7 @@ app.post('/register', function(req, res){
     res.redirect('/');
 });
 
-function assert_session(req, res) {
+function assert_invalid_session(req, res) {
     const state = req.isAuthenticated();
 
     if(!state){
@@ -141,7 +141,7 @@ function assert_session(req, res) {
         );
     }
 
-    return state;
+    return !state;
 }
 
 app.get('/login', function(req, res) {
@@ -160,21 +160,21 @@ app.get('/user', function(req, res) {
 });
 
 app.get('/get_current_user', function(req, res) {
-    if (assert_session(req, res))
+    if (assert_invalid_session(req, res))
         return;
 
     res.send({message: "success", user:req.user});
 });
 
 app.get('/user_edit', function(req, res) {
-    if (assert_session(req, res))
+    if (assert_invalid_session(req, res))
         return;
 
     res.sendFile(__dirname + 'user_edit.html');
 });
 
 app.get('/user_edit.js', function(req, res) {
-    if (assert_session(req, res))
+    if (assert_invalid_session(req, res))
         return;
 
     res.sendFile(__dirname + '/user_edit.js');
@@ -185,7 +185,7 @@ app.get('/discussion', function(req, res) {
 });
 
 app.post('/post_reply', function(req, res) {
-    if (assert_session(req, res))
+    if (assert_invalid_session(req, res))
         return;
 });
 
