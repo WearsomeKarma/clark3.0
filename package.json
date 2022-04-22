@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/WearsomeKarma/clark3.0#readme",
   "dependencies": {
+    "body-parser": "^1.20.0",
     "express": "^4.17.3",
     "express-session": "^1.17.2",
     "gun": "^0.2020.1236",

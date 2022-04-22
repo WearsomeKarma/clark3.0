@@ -4,9 +4,10 @@ const mongoose  = require('mongoose');
 const Gun       = require('gun');
 const passport  = require('passport');
 const passlocal = require('passport-local-mongoose');
+const bodyParser = require('body-parser');
 
+///Configure GunJS and user schema
 require('gun-mongo');
-
 const gun = new Gun({
     file: false,
 
@@ -22,15 +23,22 @@ const gun = new Gun({
 });    
 const user_gun = gun.user();
 
+
+///Configure body-parser and set static dir path.
 const app = express();
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static(__dirname + "/public"));
 app.use(session({
     secret: "alongsecretonlyiknow_asdlfkhja465xzcew523",
     resave: false,
     saveUninitialized: false
 }));
+
+///Configure Passport
 app.use(passport.initialize());
 app.use(passport.session());
 
+//Configure MongoDB and Schema
 mongoose.connect('mongodb://localhost:27017/gun', {useNewUrlParser: true, useUnifiedTopology: true});
 
 const userSchema = new mongoose.Schema(
@@ -48,7 +56,7 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-const passport_user = mongoose.model('User', userSchema);
+const passport_usermodel = mongoose.model('User', userSchema);
 
 app.listen(3000, function () {
     console.log("server started at 3000");
@@ -95,7 +103,7 @@ app.post('/register', function(req, res){
 });
 
 app.get('/login', function(req, res) {
-    res.sendFile();
+    res.sendFile(__dirname + "/public/login.html");
 });
 
 app.get('/user', function(req, res) {
