@@ -5,7 +5,7 @@ $(document).ready(function(){
             //_if the user is logged in, remove the register and log in buttons
             const user = data.user;
             $('.login').remove();
-            $('#showname').text(user.fullname);
+            $('#showname').text(user.username);
         } else {
             //_if the user is not logged in, then show the login and register buttons
             $('.logout').remove()
