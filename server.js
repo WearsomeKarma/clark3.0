@@ -106,12 +106,29 @@ app.get('/login', function(req, res) {
     res.sendFile(__dirname + "/public/login.html");
 });
 
+app.post('/login', function(req, res) {
+    
+});
+
 app.get('/user', function(req, res) {
     
 });
 
+app.get('/get_current_user', function(req, res) {
+    if (!req.isAuthenticated()){
+        res.send({message: "not-logged-in"});
+        return;
+    }
+
+    return {message: "success", user:req.user};
+});
+
 app.get('/user_edit', function(req, res) {
     //is_auth
+    if (!req.isAuthenticated()) {
+        res.send({ message: "not-logged-in"});
+        return;
+    }
 
     res.sendFile(__dirname + 'user_edit.html');
 });
