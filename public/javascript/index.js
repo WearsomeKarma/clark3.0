@@ -1,4 +1,6 @@
+
 ///Show username if logged in
+/*
 $(document).ready(function(){
     $.getJSON('/get_current_user').done(function (data){
         if (data.message=== "success"){
@@ -11,3 +13,7 @@ $(document).ready(function(){
         }
     })
 })
+*/
+
+apply_splash();
+apply_socials('#splash');
