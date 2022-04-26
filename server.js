@@ -156,7 +156,7 @@ app.post('/login',
 );
 
 app.get('/user', function(req, res) {
-    
+    res.sendFile(__dirname + '/public/user.html');    
 });
 
 app.get('/get_current_user', function(req, res) {
