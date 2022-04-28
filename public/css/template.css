@@ -28,3 +28,7 @@ html, body {
 .error_message {
     color: rgb(146, 27, 47);
 }
+
+h3{
+    color: var(--dark-liver);
+}

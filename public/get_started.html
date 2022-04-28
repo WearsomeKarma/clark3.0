@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClarkWeb3</title>
+    <title>ClarkWeb3 - Getting started</title>
 
     <!--    css style-->
     <link rel="stylesheet" href="css/template.css">
@@ -38,67 +38,54 @@
 <body class="main_background">
     <!-- Navbar with Javascript-->
     <nav></nav>
-    
+
     <!-- Main -->
     <div class="container">
-
-        <div id=splash class="mb-3">
-        </div>
-
-        <div class="row">
-            <div class="card col-7 border-dark">
-                <div class="card-body">
-                    <p class="card-text my-0">
-                        <b>Web3</b> (also known as Web 3.0 and sometimes stylized as web3) is an idea for a new iteration of the World Wide Web 
-                        based on blockchain technology, which incorporates concepts such as decentralization and token-based economics.
-                        Some technologists and journalists have contrasted it with Web 2.0, wherein they say data and content are centralized 
-                        in a small group of companies sometimes referred to as "Big Tech".
-                    </p>
-                    <a type="button" class="btn btn-dark text-white position-absolute bottom-0 end-0 m-1">Learn more</a>
-                </div>
-            </div>
-            <div class="card col-3 offset-2 bg-dark">
-                <img class="card-img-top" src="img/web3.png" alt="Card image cap">
-            </div>
-        </div>
-
         <div class="row mt-5">
-            <div class="card col-4 border-dark bg-warning">
-                <img class="card-img-top" src="img/gun.svg" alt="Card image cap">
-            </div>
-
-            <div class="card col-7 border-dark offset-1">
-                <div class="card-body">
-                    <p class="card-text my-0">
-                        <b>GUN</b> is a small, easy, and fast protocol for syncing data.
-                        Because GUN is small, it can be added to your app to improve a single feature.
-                        But because GUN is easy, it can also replace hundreds or thousands of lines of code,
-                        networking calls, storage boilerplate, pub/sub routing, cache invalidation, and more.
-                        The power of GUN is that it abstracts this complexity into a unified simple API that is very
-                        different than traditional systems, with the aim of making it easy to build cool apps quickly.
-                    </p>
-                    <a type="button" class="btn btn-dark text-white position-absolute bottom-0 start-0 m-1">Learn more</a>
-                </div>
+            <div class="embed-responsive embed-responsive-16by9">
+                <iframe class="embed-responsive-item" style="width: 100%; height: 30rem;"
+                    src="https://www.youtube.com/embed/oTQXzhm8w_8" allowfullscreen></iframe>
             </div>
         </div>
+        <hr>
 
-        <div class="container mt-5">
-            <h2>Interested? Explore our Website <i class="fa-solid fa-angles-down fa-bounce"></i></h2>
-        </div>
+        <h3>
+            Installation
+        </h3>
 
-        <div class="btn-toolbar mt-4 " role="toolbar" aria-label="Explore ClarkWeb3 Website">
-            <div class="btn-group btn-group-lg col-3 offset-2" role="group">
-              <button type="button" class="btn btn-dark">See Students Showcases</button>
-            </div>
-            <div class="btn-group btn-group-lg col-3 offset-1" role="group">
-                <button type="button" class="btn btn-warning">Get Started with GunJS</button>
-            </div>
-        </div>
-    </div>
+        <pre class="card border-dark bg-warning">
+            <code>
+                &lt;script src="https://cdn.jsdelivr.net/npm/gun/gun.js"&gt;&lt;/script &gt;
+            </code>
+        </pre>
 
-    <!-- Footer -->
-    <footer id="footer" class="mt-5">
-    </footer>
+        <h3>
+            Javascript
+        </h3>
+
+        <pre class="card border-dark bg-warning">
+            <code>
+                gun = GUN();
+                const GUN = require('gun/gun');
+            </code>
+        </pre>
+
+        <h3>
+            NODE
+        </h3>
+        <p>Now, we have to include this into our server (JS file)</p>
+        <p>First, we run <code>$npm install gun</code></p>
+        <p>then we add</p>
+        <pre class="card border-dark bg-warning">
+            <code>
+                const GUN = require('gun');
+            </code>
+        </pre>
+
+
+        <!-- Footer -->
+        <footer id="footer" class="mt-5">
+        </footer>
 </body>
 
 </html>
