@@ -109,12 +109,14 @@ app.post('/register', function(req, res){
     });
 
     if (fail_gun){
+        console.log("error - " + fail_gun);
         res.redirect('/register?error=' + fail_gun);
         return;
     }
 
     Passport_User_Model.register(register, register.password, (error, user) => {
         if (error){
+            console.log("error - " + error);
             fail_passport = error;
             return;
         }
