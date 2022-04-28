@@ -38,5 +38,6 @@ $('form').on('submit', function () {
 
     if (invalid) {
         $('#error_message').text(errors.join("; "))
-        return false;}
+        return false;
+    }
 });
