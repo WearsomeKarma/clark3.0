@@ -1,32 +1,27 @@
 
 function apply_user_header(user) {
-    apply_header();
-    $('user_control').append(get_user_control(user));
+    apply_header(get_user_control(user));
 }
 
 function get_user_control(user) {
-    return 
-            (!user)
-            ?
-            `
-                <a class="nav-link active login" href="/login">Login</a>
-                <a class="nav-link active login" href="/register">Register</a>
-            `
-            :
-            `
-                <div class="navbar-brand mb-0 logout">Hello, <a id="showname" href="/user?user_id=${user._id}">${user.username}</a></div>
-                <a class="nav-link active logout" href="/logout">Log out</a>
-            `;
+    if (!user)
+        return `
+            <a class="nav-link active login" href="/login">Login</a>
+            <a class="nav-link active login" href="/register">Register</a>
+        `
+    return `
+            <div class="navbar-brand mb-0 logout">Hello, <a id="showname" href="/user?user_id=${user._id}">${user.username}</a></div>
+            <a class="nav-link active logout" href="/logout">Log out</a>
+        `;
 }
 
-function apply_header() {
-    $('nav').append(get_user_header(user));
+function apply_header(user_control) {
+    $('nav').append(get_header(user_control));
     $('nav').addClass('navbar navbar-expand-lg navbar-dark bg-dark main_background');
 }
 
-function get_header() {
+function get_header(user_control) {
     return `
-    <div>
         <img src="img/logo.png" style="width: 6rem;" class="mx-3">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -37,11 +32,11 @@ function get_header() {
                 <a class="nav-item nav-link" href="/showcase">Showcases</a>
                 <a class="nav-item nav-link" href="/gettingstarted">Getting Started</a>
                 <a class="nav-item nav-link" href="contact">Contact Us</a>
-              </div>
+            </div>
         </div>
         <div id=user_control class="navbar-nav navbar-right">
+            ${user_control}
         </div>
-      </div>
     `;
 }
 

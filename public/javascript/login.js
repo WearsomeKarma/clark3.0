@@ -1,10 +1,6 @@
 const urlParams = new URLSearchParams(window.location.search);
 const error= urlParams.get("error")
 
-//Get components
-apply_footer();
-
-
 if (error) {
     $('#error_message').text(error);
 }

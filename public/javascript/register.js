@@ -1,5 +1,6 @@
 const urlParams = new URLSearchParams(window.location.search);
 const error= urlParams.get("error")
+
 if (error) {
     $('#error_message').text(error);
 }
