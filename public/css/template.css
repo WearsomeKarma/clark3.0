@@ -25,6 +25,6 @@ html, body {
     background-color: var(--spanish-gray);
 }
 
-#error_message {
+.error_message {
     color: rgb(146, 27, 47);
 }
