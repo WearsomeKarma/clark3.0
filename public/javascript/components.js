@@ -1,11 +1,32 @@
 
-function apply_header(user) {
-    $('body').prepend(get_header(user));
+function apply_user_header(user) {
+    apply_header();
+    $('user_control').append(get_user_control(user));
 }
 
-function get_header(user) {
+function get_user_control(user) {
+    return 
+            (!user)
+            ?
+            `
+                <a class="nav-link active login" href="/login">Login</a>
+                <a class="nav-link active login" href="/register">Register</a>
+            `
+            :
+            `
+                <div class="navbar-brand mb-0 logout">Hello, <a id="showname" href="/user?user_id=${user._id}">${user.username}</a></div>
+                <a class="nav-link active logout" href="/logout">Log out</a>
+            `;
+}
+
+function apply_header() {
+    $('nav').append(get_user_header(user));
+    $('nav').addClass('navbar navbar-expand-lg navbar-dark bg-dark main_background');
+}
+
+function get_header() {
     return `
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark main_background">
+    <div>
         <img src="img/logo.png" style="width: 6rem;" class="mx-3">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -18,25 +39,9 @@ function get_header(user) {
                 <a class="nav-item nav-link" href="contact">Contact Us</a>
               </div>
         </div>
-        <div class="navbar-nav navbar-right">`
-    +
-        (
-            (!user)
-            ?
-            `
-                <a class="nav-link active login" href="/login">Login</a>
-                <a class="nav-link active login" href="/register">Register</a>
-            `
-            :
-            `
-                <div class="navbar-brand mb-0 logout">Hello, <a id="showname" href="/user?user_id=${user._id}">${user.username}</a></div>
-                <a class="nav-link active logout" href="/logout">Log out</a>
-            `
-        )
-    +
-        `
+        <div id=user_control class="navbar-nav navbar-right">
         </div>
-      </nav>
+      </div>
     `;
 }
 
@@ -97,5 +102,60 @@ function get_socials() {
                       </div>
                 </div>
             </div>
+    `;
+}
+
+function get_user_icon(img_url, user_id) {
+    return `
+        <img src="${discussion_message.user_img}" onclick="location.href=/user?user_id=${discussion_message.user_id}">
+    `;
+}
+
+function get_discussion_overview(discussion) {
+    return `
+        <div>
+            <div class="row">
+                <div class="col">
+                    <h5>${discussion.post_title}</h5>
+                </div>
+                <div class="col">
+                    ${get_user_icon(dicussion.user_img, discussion_message.user_id)}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <p>${discussion.post_content}</p>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <img class="card-img-top" src="${discussion.post_img}">
+                        <div class="card-body">
+                            <button onclick="location.href=/discussion?post_id=${discussion.post_id}">Expore</button>
+                            <!-- ADD CLAPS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function get_discussion_message(discussion_message) {
+    return `
+        <div class="row">
+            <!-- message contents -->
+            <div class="col">
+                <p>${discussion_message.content}</p>
+            </div>
+            <!-- message user info -->
+            <div class="col">
+                <div class="row">
+                    ${get_user_icon(discussion_message.user_img, discussion_message.user_id)}
+                </div>
+                <div class="row d-flex justify-content-center">
+                    <h5>${discussion_message.user_name}</h5>
+                </div>
+            </div>
+        </div>
     `;
 }
