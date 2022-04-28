@@ -157,6 +157,10 @@ app.post('/login',
     }    
 );
 
+app.get('/contact', function(req, res) {
+    res.sendFile(__dirname + "/public/contact.html");
+});
+
 app.get('/user', function(req, res) {
     
 });
@@ -189,6 +193,10 @@ app.get('/discussion', function(req, res) {
 app.post('/post_reply', function(req, res) {
     if (assert_invalid_session(req, res))
         return;
+});
+
+app.get('/get_discussions', function(req, res) {
+    
 });
 
 app.get('/get_discussions', function(req, res) {
