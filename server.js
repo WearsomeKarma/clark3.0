@@ -161,6 +161,14 @@ app.get('/contact', function(req, res) {
     res.sendFile(__dirname + "/public/contact.html");
 });
 
+app.get('/showcase', function(req, res) {
+    res.sendFile(__dirname + "/public/showcase.html");
+});
+
+app.get('/get_started', function(req, res) {
+    res.sendFile(__dirname + "/public/get_started.html");
+});
+
 app.get('/user', function(req, res) {
     
 });
@@ -187,7 +195,7 @@ app.get('/user_edit.js', function(req, res) {
 });
 
 app.get('/discussion', function(req, res) {
-    
+    res.sendFile(__dirname + "/public/get_started.html");
 });
 
 app.post('/post_reply', function(req, res) {
@@ -199,6 +207,6 @@ app.get('/get_discussions', function(req, res) {
     
 });
 
-app.get('/get_discussions', function(req, res) {
+app.get('/get_comments', function(req, res) {
     
 });

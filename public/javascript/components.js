@@ -30,7 +30,7 @@ function get_header(user_control) {
             <div class="navbar-nav">
                 <a class="nav-item nav-link active" href="/">Home</a>
                 <a class="nav-item nav-link" href="/showcase">Showcases</a>
-                <a class="nav-item nav-link" href="/gettingstarted">Getting Started</a>
+                <a class="nav-item nav-link" href="/get_started">Getting Started</a>
                 <a class="nav-item nav-link" href="contact">Contact Us</a>
             </div>
         </div>
