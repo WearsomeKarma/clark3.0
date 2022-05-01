@@ -187,7 +187,7 @@ app.get('/get_current_user', function(req, res) {
 app.get('/get_user', function(req, res) {
     Passport_User_Model.findOne
     (
-        {_id: req.body.user_id},
+        {_id: req.query.user_id},
         function (error, user) {
             if (error) {
                 res.send({message: error, user: {}});
