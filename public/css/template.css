@@ -37,3 +37,7 @@ h3{
     color:var(--safety-yellow);
     text-decoration: none;
 }
+
+#username, #user_id{
+    color: var(--safety-yellow);
+}

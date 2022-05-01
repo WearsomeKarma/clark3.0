@@ -37,25 +37,29 @@
     <nav></nav>
 
     <!-- Main -->
-    <div class="container ">
+    <div class="container">
         <div class="row">
-            <div class="col">
-                <img id=user_img style="width: 200px">
+            <div class="col-lg-4">
+                <img id=user_img style="width: 15rem">
             </div>
-            <div class="col">
+            <div class="col-lg-8 position-relative">
+                <h3 class="position-absolute bottom-0 start-0 my-lg-5">User Email: <span id="username"></span> <br>
+                    User ID: <span id="user_id"></span>
+                </h3>
+                <!-- <h3 class="position-absolute bottom-0 start-0 my-lg-4">User ID: <span id="user_id"></span></h3> -->
             </div>
         </div>
         <div class="row">
-            <div class="col-2">
+            <div class="col-lg-3">
                 <ul class="list-group">
-                    <li class="list-group-item">
-                        <button style="width: 100%" class="btn btn-primary">Dashboard</button>
+                    <li class="list-group-item list-group-item-warning">
+                        Account Details
                     </li>
-                    <li class="list-group-item">
-                        <button style="width: 100%" class="btn btn-primary">Account Details</button>
+                    <li class="list-group-item list-group-item-dark">
+                        Showcases
                     </li>
-                    <li class="list-group-item">
-                        <button style="width: 100%" class="btn btn-primary">Password Change</button>
+                    <li class="list-group-item list-group-item-dark">
+                        Settings
                     </li>
                 </ul>
             </div>
