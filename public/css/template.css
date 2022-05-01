@@ -32,3 +32,8 @@ html, body {
 h3{
     color: var(--dark-liver);
 }
+
+#showname {
+    color:var(--safety-yellow);
+    text-decoration: none;
+}
