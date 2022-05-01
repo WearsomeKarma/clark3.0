@@ -45,8 +45,29 @@
         </div>
 
         <div id=discussions class="container">
-            <ul id=discussions_list class="list-group">
-            </ul>
+            <div id="discussions_controls" class="row">
+                <div class="col-6 d-flex justify-content-center">
+                    <div class="input-group">
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            placeholder="Search discussions" 
+                            aria-label="Search discussions" 
+                            aria-describedby="basic-addon1"
+                        >
+                        <span class="input-group-text" id="basic-addon1">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-1 offset-md-5">
+                    <a><h1><i class="fa-solid fa-circle-plus"></i></h1></a>
+                </div>
+            </div>
+            <div class="row">
+                <ul id=discussions_list class="list-group">
+                </ul>
+            </div>
         </div>
     </div>
 

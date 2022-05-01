@@ -80,6 +80,10 @@ const discussion_schema = new mongoose.Schema(
     }
 );
 
+const content_schema = new mongoose.Schema(
+
+);
+
 const Discussion_Model = mongoose.model('Dicussion', discussion_schema);
 
 app.listen(3000, function () {
@@ -178,6 +182,20 @@ app.get('/get_current_user', function(req, res) {
         return;
 
     res.send({message: "success", user:req.user});
+});
+
+app.get('/get_user', function(req, res) {
+    Passport_User_Model.findOne
+    (
+        {_id: req.body.user_id},
+        function (error, user) {
+            if (error) {
+                res.send({message: error, user: {}});
+                return;
+            }
+            res.send({message: success, user: user});
+        }
+    );
 });
 
 app.get('/user_edit', function(req, res) {
