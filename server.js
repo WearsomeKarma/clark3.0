@@ -193,7 +193,7 @@ app.get('/get_user', function(req, res) {
                 res.send({message: error, user: {}});
                 return;
             }
-            res.send({message: success, user: user});
+            res.send({message: "success", user: user});
         }
     );
 });
