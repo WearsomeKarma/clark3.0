@@ -185,10 +185,10 @@ function get_discussion_overview(discussion, author, content) {
                     <p>${content?.content_paragraph}</p>
                 </div>
                 <div class="col">
-                    <div class="card">
+                    <div class="card" style="width= 12rem;">
                         <img class="card-img-top" src="${discussion?.post_img ?? "img/logo.png"}">
                         <div class="card-body">
-                            <button onclick="location.href='/discussion?post_id=${discussion?._id}'">Expore</button>
+                            <button class="btn btn-warning col-lg-6 offset-lg-3" onclick="location.href='/discussion?post_id=${discussion?._id}'">Explore</button>
                             <!-- ADD CLAPS -->
                         </div>
                     </div>
