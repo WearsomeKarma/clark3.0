@@ -102,18 +102,81 @@ function get_socials() {
 
 function get_user_icon(img_url, user_id) {
     return `
-        <img src="${user_id}" onclick="location.href=/user?user_id=${user_id}">
+    <a href="/user?user_id=${user_id}">
+        <img 
+            class=
+            "profile_img main_background text-white border border-warning mb-2" 
+            src="${img_url ?? "/img/default_user.png"}" 
+            onclick="location.href=/user?user_id=${user_id}"
+        >
+    </a>
+    `;
+}
+
+function fill_discussion_list(target, query, data_array)
+{
+    const target_element = $(target);
+
+    $.getJSON('/get_discussions', {discussion_query: query})
+    .done((data) => {
+        if (data.message !== 'success')
+            return;
+
+        for(const discussion of data.discussions) {
+            data_array?.append(discussion);
+            $.getJSON('/get_user', {user_id: discussion.author_id}, (data) => {
+                const author = data.user;
+
+                $.getJSON('/get_content', {content_id: discussion.root_content_id},
+                    (data) => {
+                        if (data.message !== 'success') {
+                            return;
+                        }
+
+                        target_element.append
+                        (
+                            get_discussion_overview
+                            (
+                                discussion,
+                                author,
+                                data.content
+                            )
+                        );
+                    });
+            });
+        }
+    });
+}
+
+// for reference only - to pull from before deleting
+function make_post(post_dictionary){
+    return `
+    <li class="list-group-item bg-dark text-white border border-warning">
+        <div class="row">
+            <div class="col-lg-7">
+                <p>${post_dictionary.description}</p>
+            </div>
+            <div class="col-lg-5">
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" style="width: 100%; height: 15rem;"
+                        src="${post_dictionary.url}" allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+
+        </div>  
+    </li>
     `;
 }
 
 function get_discussion_overview(discussion, author, content) {
     return `
-        <div>
+        <li class="list-group-item bg-dark text-white border border-warning">
             <div class="row">
                 <div class="col">
                     <h5>${discussion?.title}</h5>
                 </div>
-                <div class="col">
+                <div class="col d-flex justify-content-end">
                     ${get_user_icon(author?.profile_img, author?._id)}
                 </div>
             </div>
@@ -131,7 +194,7 @@ function get_discussion_overview(discussion, author, content) {
                     </div>
                 </div>
             </div>
-        </div>
+        </li>
     `;
 }
 

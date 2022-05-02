@@ -48,6 +48,9 @@ const user_schema = new mongoose.Schema(
             unique: true,
             required: true,
             minlength: 5
+        },
+        profile_img: {
+            type: String
         }
     }
 );
@@ -116,7 +119,8 @@ app.get('/register', function(req, res){
 app.post('/register', function(req, res){
     const register = {
         username: req.body.username,
-        password: req.body.password
+        password: req.body.password,
+        profile_img: ""
     };
 
     var fail_passport = undefined;
@@ -218,18 +222,27 @@ app.get('/get_user', function(req, res) {
     );
 });
 
-app.get('/user_edit', function(req, res) {
-    if (assert_invalid_session(req, res))
+app.post('/user_edit', function(req, res) {
+    if (assert_invalid_session(req, res)) {
+        res.redirect('/login');
         return;
+    }
+    
+    const user_id = req.body.user_id;
 
-    res.sendFile(__dirname + '/src/user_edit.html');
-});
-
-app.get('/src/user_edit.js', function(req, res) {
-    if (assert_invalid_session(req, res))
+    if (!req.user._id.equals(user_id)) {
+        res.redirect('/user?user_id=' + req.body.user_id);
         return;
+    }
 
-    res.sendFile(__dirname + '/src/user_edit.js');
+    const update_field = {};
+    if (req.body.profile_img) update_field.profile_img = req.body.profile_img;
+
+    Passport_User_Model
+        .find({_id: uer_id})
+        .update(update_field);
+
+    res.redirect('/user?user_id=' + req.body.user_id);
 });
 
 app.get('/discussion', function(req, res) {
@@ -313,10 +326,12 @@ app.post('/post_reply', function(req, res) {
 });
 
 app.get('/get_discussions', function(req, res) {
-    const author_id = req.query.author_id;
-    const skip = req.query.skip;
-    const limit = req.query.limit;
-    const search_text = req.query.search_text ?? "[a-z]*";
+    const discussion_query = req.query.discussion_query;
+
+    const author_id = discussion_query?.author_id;
+    const skip = discussion_query?.skip;
+    const limit = discussion_query?.limit;
+    const search_text = discussion_query?.search_text ?? "[a-z]*";
 
     Discussion_Model
         .find
