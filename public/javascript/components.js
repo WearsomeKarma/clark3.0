@@ -88,11 +88,11 @@ function get_socials() {
             <div class="row">
                 <div class="col-md-4 offset-4 d-flex justify-content-center">
                     <div class="btn-group" role="group">
-                        <a type="button" class="btn" href="https://www.facebook.com/">
+                        <a type="button" class="btn" href="https://twitter.com/marknadal">
                         <img src="img/twitter.svg" style="width: 3rem;"></a>
-                        <a type="button" class="btn" href="https://www.facebook.com/">
+                        <a type="button" class="btn" href="https://www.youtube.com/channel/UC7kBESiHvbFf6ZBJPScRS3g">
                         <img src="img/youtube.svg" style="width: 3rem;"></a>
-                        <a type="button" class="btn" href="https://www.facebook.com/">
+                        <a type="button" class="btn" href="https://github.com/amark/gun">
                         <img src="img/github.svg" style="width: 3rem;"></a>
                       </div>
                 </div>
