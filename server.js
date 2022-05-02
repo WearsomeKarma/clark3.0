@@ -61,6 +61,28 @@ passport.deserializeUser(Passport_User_Model.deserializeUser());
 
 const discussion_schema = new mongoose.Schema(
     {
+        author_id : {
+            type: mongoose.ObjectId
+        },
+        title : {
+            type: String
+        },
+        root_content_id : {
+            type: mongoose.ObjectId,
+            unique: true
+        },
+        comment_content_ids : [
+            {
+                type: mongoose.ObjectId
+            }
+        ]
+    }
+);
+
+const Discussion_Model = mongoose.model('Discussion', discussion_schema);
+
+const content_schema = new mongoose.Schema(
+    {
         user_id: {
             type: mongoose.ObjectId,
             required: true
@@ -68,23 +90,16 @@ const discussion_schema = new mongoose.Schema(
         video_url : {
             type: String
         },
-        comments : [
-            {
-                user_id: {
-                    type: mongoose.ObjectId,
-                    required: true
-                },
-                content: String
+        content_paragraph : {
+            type: String,
+            required: function() {
+                return this.content_paragraph.length >= 10;
             }
-        ]
+        }
     }
 );
 
-const content_schema = new mongoose.Schema(
-
-);
-
-const Discussion_Model = mongoose.model('Dicussion', discussion_schema);
+const Content_Model = mongoose.model('Content', content_schema);
 
 app.listen(3000, function () {
     console.log("server started at 3000");
@@ -161,6 +176,11 @@ app.post('/login',
     }    
 );
 
+app.get('/logout', function(req, res) {
+    req.logout();
+    res.redirect('/');
+});
+
 app.get('/contact', function(req, res) {
     res.sendFile(__dirname + "/public/contact.html");
 });
@@ -202,19 +222,90 @@ app.get('/user_edit', function(req, res) {
     if (assert_invalid_session(req, res))
         return;
 
-    res.sendFile(__dirname + 'user_edit.html');
+    res.sendFile(__dirname + '/src/user_edit.html');
 });
 
-app.get('/user_edit.js', function(req, res) {
+app.get('/src/user_edit.js', function(req, res) {
     if (assert_invalid_session(req, res))
         return;
 
-    res.sendFile(__dirname + '/user_edit.js');
+    res.sendFile(__dirname + '/src/user_edit.js');
 });
 
 app.get('/discussion', function(req, res) {
-    res.sendFile(__dirname + "/public/get_started.html");
+    res.sendFile(__dirname + "/public/topic.html");
 });
+
+app.get('/new_discussion', function(req, res) {
+    if (!req.isAuthenticated()) {
+        res.redirect('/login');
+        return;
+    }
+
+    res.sendFile(__dirname + '/src/new_topic.html');
+});
+
+app.get('/src/new_topic.js', function(req, res) {
+    if (!req.isAuthenticated()) {
+        res.redirect('/login');
+        return;
+    }
+
+    res.sendFile(__dirname + '/src/new_topic.js');
+})
+
+app.post('/new_discussion', function(req, res) {
+    console.log('got post');
+    if(!req.isAuthenticated()) {
+        res.redirect('/login');
+        return;
+    }
+
+    const discussion_payload = {
+        author_id: req.body.author_id,
+        title: req.body.title,
+        video_url: req.body.video_url,
+        content: req.body.content
+    };
+
+    console.log(discussion_payload);
+    console.log(req.user);
+
+    if (!req.user._id.equals(discussion_payload.author_id)) {
+        res.redirect('/new_discussion?=' + 'A database error has occured. Consider relogging to fix the issue.');
+        return;
+    }
+
+    const content_payload = {
+        user_id: discussion_payload.author_id,
+        video_url: discussion_payload.video_url,
+        content_paragraph: discussion_payload.content
+    }
+
+    const content = new Content_Model(content_payload);
+    content.save(function (error) {
+        if (error) {
+            db_error = error;
+            console.log(error);
+            res.redirect('/new_discussion?error=' + error);
+        }
+
+        discussion_payload.root_content_id = content._id;
+        discussion_payload.comment_content_ids = [];
+
+        const discussion = new Discussion_Model(discussion_payload);
+        discussion.save(function (error) {
+            if (error) {
+                db_error = error;
+                console.log(error);
+                res.redirect('/new_discussion?error=' + error);
+            }
+
+            res.redirect('/discussion?discussion_id=' + discussion._id);
+        });
+    });
+});
+
 
 app.post('/post_reply', function(req, res) {
     if (assert_invalid_session(req, res))
@@ -222,9 +313,46 @@ app.post('/post_reply', function(req, res) {
 });
 
 app.get('/get_discussions', function(req, res) {
-    
+    const author_id = req.query.author_id;
+    const skip = req.query.skip;
+    const limit = req.query.limit;
+    const search_text = req.query.search_text ?? "[a-z]*";
+
+    Discussion_Model
+        .find
+        (
+            /*
+            {
+                $or: [
+                    { author_id: new mongoose.Types.ObjectId(author_id) },
+                    { title: { $regex: search_text, $options: 'i'}}
+                ]
+            }
+            */
+        )
+        .skip(skip ?? 0)
+        .limit(limit ?? 10)
+        .exec(function (error, discussions) {
+            if (error) {
+                console.log(error);
+                res.send({message: error, discussions: {}});
+                return;
+            }
+
+            res.send({message: "success", discussions: discussions});
+        });
 });
 
-app.get('/get_comments', function(req, res) {
-    
+app.get('/get_content', function(req, res) {
+    Content_Model
+        .findOne({_id: req.query.content_id})
+        .exec(function (error, content)
+            {
+                if (error) {
+                    res.send({message: error, content: {}});
+                    return;
+                }
+
+                res.send({message: 'success', content: content});
+            });
 });

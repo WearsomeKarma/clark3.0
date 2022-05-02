@@ -3,3 +3,5 @@ after register - automatically login
 link the index page buttons
 
 modify splash to actually link to gun websites
+
+for new_discussion, when leaving focus of video_url - slide in an IFrame for the youtube video

@@ -102,30 +102,30 @@ function get_socials() {
 
 function get_user_icon(img_url, user_id) {
     return `
-        <img src="${discussion_message.user_img}" onclick="location.href=/user?user_id=${discussion_message.user_id}">
+        <img src="${user_id}" onclick="location.href=/user?user_id=${user_id}">
     `;
 }
 
-function get_discussion_overview(discussion) {
+function get_discussion_overview(discussion, author, content) {
     return `
         <div>
             <div class="row">
                 <div class="col">
-                    <h5>${discussion.post_title}</h5>
+                    <h5>${discussion?.title}</h5>
                 </div>
                 <div class="col">
-                    ${get_user_icon(dicussion.user_img, discussion_message.user_id)}
+                    ${get_user_icon(author?.profile_img, author?._id)}
                 </div>
             </div>
             <div class="row">
                 <div class="col">
-                    <p>${discussion.post_content}</p>
+                    <p>${content?.content_paragraph}</p>
                 </div>
                 <div class="col">
                     <div class="card">
-                        <img class="card-img-top" src="${discussion.post_img}">
+                        <img class="card-img-top" src="${discussion?.post_img ?? "img/logo.png"}">
                         <div class="card-body">
-                            <button onclick="location.href=/discussion?post_id=${discussion.post_id}">Expore</button>
+                            <button onclick="location.href='/discussion?post_id=${discussion?._id}'">Expore</button>
                             <!-- ADD CLAPS -->
                         </div>
                     </div>
