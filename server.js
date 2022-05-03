@@ -138,19 +138,14 @@ app.post('/register', function(req, res){
     }
 
     Passport_User_Model.register(register, register.password, (error, user) => {
-
         if (error){
             console.log("passport error - " + error);
-            fail_passport = error;
-
-            if(fail_passport){
-                user_gun.delete(register.username, register.password);
-                res.redirect("/register?error=" + error);
-            }
+            user_gun.delete(register.username, register.password);
+            res.redirect("/register?error=" + error);
             return;
         }
-    
-        res.redirect('/');
+
+        res.redirect('/login?info=Account creation successful! Please login again.');
     });
 
 });

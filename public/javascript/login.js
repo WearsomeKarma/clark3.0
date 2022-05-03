@@ -1,10 +1,14 @@
 const urlParams = new URLSearchParams(window.location.search);
-const error= urlParams.get("error")
+const error= urlParams.get("error");
+const info = urlParams.get("info");
 
 if (error) {
     $('#error_message').text(error);
 }
 
+if(info){
+    $('#info').text("> " + info);
+}
 //show email length error and animate it
 $("#email_length_error").hide();
 $("#email").on("change", function(){
