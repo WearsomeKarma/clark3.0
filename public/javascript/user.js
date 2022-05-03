@@ -7,7 +7,7 @@ let current_user_id;
 $('#user_img').attr('src', ("/img/default_user.png"));
 $.getJSON("/get_current_user").done(function(data){
     current_user_id = data.user._id
-    console.log(data.user.profile_img);
+    console.log(data.user);
     if (data.user?.profile_img?.length ?? 0 > 0)
         $('#user_img').attr('src', (data.user?.profile_img));
 })
@@ -78,7 +78,7 @@ function load_form(user){
 
 //hide and show showcases
 const post_list = $("#user_showcases");
-post_list.hide();
+//post_list.hide();
 fill_discussion_list(post_list, {author_id: user_id});
 
 //load settings
@@ -89,6 +89,7 @@ $("#user_settings").append(get_settings_form());
 
 function apply_toggle(control, target, hide) {
     const target_element = $(target);
+    $('.toggle').slideUp("1000");
     $(control).on("click", function(){
         if (target_element.hasClass("hidden")){
             target_element.slideUp("1000");
