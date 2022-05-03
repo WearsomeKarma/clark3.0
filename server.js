@@ -227,22 +227,22 @@ app.post('/user_edit', function(req, res) {
         res.redirect('/login');
         return;
     }
-    
-    const user_id = req.body.user_id;
 
-    if (!req.user._id.equals(user_id)) {
-        res.redirect('/user?user_id=' + req.body.user_id);
-        return;
-    }
+    const user_id = req.user._id;
+    const update_field = { $set: {}};
+    if (req.body.profile_img) update_field.$set.profile_img = req.body.profile_img;
+    console.log(update_field);
 
-    const update_field = {};
-    if (req.body.profile_img) update_field.profile_img = req.body.profile_img;
+    /*
+    Passport_User_Model
+        .find({_id: user_id})
+        .update(update_field);
+    */
 
     Passport_User_Model
-        .find({_id: uer_id})
-        .update(update_field);
+        .updateMany({}, {$set: { profile_img: req.body.profile_img }});
 
-    res.redirect('/user?user_id=' + req.body.user_id);
+    res.redirect('/user?user_id=' + user_id);
 });
 
 app.get('/discussion', function(req, res) {
@@ -280,9 +280,6 @@ app.post('/new_discussion', function(req, res) {
         video_url: req.body.video_url,
         content: req.body.content
     };
-
-    console.log(discussion_payload);
-    console.log(req.user);
 
     if (!req.user._id.equals(discussion_payload.author_id)) {
         res.redirect('/new_discussion?=' + 'A database error has occured. Consider relogging to fix the issue.');
@@ -331,20 +328,20 @@ app.get('/get_discussions', function(req, res) {
     const author_id = discussion_query?.author_id;
     const skip = discussion_query?.skip;
     const limit = discussion_query?.limit;
-    const search_text = discussion_query?.search_text ?? "[a-z]*";
+    const search_text = discussion_query?.search_text;
+
+    let query = { $and: []};
+    let not_query_any = true;
+    if (author_id) query.$and.push({ author_id: author_id });
+    if ((search_text?.length ?? 0) > 0) query.$and.push({ title: { $regex: search_text, $options: 'i'}});
+
+    if (query.$and.length === 0)
+        query = {};
+
+    console.log(query);
 
     Discussion_Model
-        .find
-        (
-            /*
-            {
-                $or: [
-                    { author_id: new mongoose.Types.ObjectId(author_id) },
-                    { title: { $regex: search_text, $options: 'i'}}
-                ]
-            }
-            */
-        )
+        .find(query)
         .skip(skip ?? 0)
         .limit(limit ?? 10)
         .exec(function (error, discussions) {
