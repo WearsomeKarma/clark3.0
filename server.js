@@ -322,6 +322,26 @@ app.post('/post_reply', function(req, res) {
         return;
 });
 
+app.get('/get_discussion_by_id', function(req, res) {
+    const discussion_id = req.query.discussion_id;
+    if (!discussion_id){
+        res.send({message: 'id null', discussion: {}});
+        return;
+    }
+
+    Discussion_Model
+        .findOne({_id: discussion_id})
+        .exec(function(error, discussion) {
+            if (error) {
+                console.log(error);
+                res.send({message: 'database error', discussion: {}});
+                return;
+            }
+
+            res.send({message: 'success', discussion: discussion});
+        });
+});
+
 app.get('/get_discussions', function(req, res) {
     const discussion_query = req.query.discussion_query;
 
