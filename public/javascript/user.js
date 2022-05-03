@@ -11,6 +11,7 @@ $.getJSON("/get_current_user").done(function(data){
     if (data.user?.profile_img?.length ?? 0 > 0)
         $('#user_img').attr('src', (data.user?.profile_img));
 })
+
 let user;
 $.getJSON("/get_user", {user_id: user_id}).done(function(data){
     user = data.user;
@@ -64,9 +65,8 @@ function get_settings_form(){
                 <div class="form-group">
                     <label for="profile_img">Profile Image URL</label>
                     <input class="form-control" name="profile_img" id="profile_img">
-                    <div> <p id="email_length_error" class="error_message py-0 my-0">hidden</p> </div>
                 </div>
-                <button type="submit" class="btn btn-dark mt-3">Submit Changes</button>
+                <button type="submit" class="btn btn-warning mt-3">Submit Changes</button>
             </form>     
         </li>
     `;
@@ -77,30 +77,27 @@ function load_form(user){
 }
 
 //hide and show showcases
-const post_list = $("#user_showcases");
-//post_list.hide();
-fill_discussion_list(post_list, {author_id: user_id});
+const user_showcases = $("#user_showcases");
+fill_discussion_list(user_showcases, {author_id: user_id});
 
 //load settings
-//$("#user_settings").append(make_settings_form());
 $("#user_settings").append(get_settings_form());
 
 //apply hide-show toggles
-
-function apply_toggle(control, target, hide) {
+function apply_toggle(control, target) {
     const target_element = $(target);
-    $('.toggle').slideUp("1000");
+    $('.toggle').hide();
+    $('.toggle').addClass("hidden");
     $(control).on("click", function(){
-        if (target_element.hasClass("hidden")){
-            target_element.slideUp("1000");
-        } else {
+        const previous_hidden_state = target_element.hasClass("hidden");
+        $('.toggle').addClass("hidden");
+        $('.toggle').hide();
+        if (previous_hidden_state){
             target_element.slideDown("1000");
+            target_element.toggleClass("hidden");
         }
-        target_element.toggleClass("hidden");
     });
-    if (hide)
-        target_element.hide();
 }
 
 apply_toggle('#showcase', '#user_showcases');
-apply_toggle('#settings', '#user_settings', true);
+apply_toggle('#settings', '#user_settings');
