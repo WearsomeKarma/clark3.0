@@ -8,7 +8,8 @@ if (error) {
 
 if(info){
     $('#info').text("> " + info);
-}
+} else {$('#info').hide()}
+
 //show email length error and animate it
 $("#email_length_error").hide();
 $("#email").on("change", function(){
