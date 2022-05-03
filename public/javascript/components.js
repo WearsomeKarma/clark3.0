@@ -103,7 +103,7 @@ function get_socials() {
 function get_user_icon(img_url, user_id) {
     return `
     <a href="/user?user_id=${user_id}">
-        <img 
+        <img style="width:full;"
             class=
             "profile_img main_background text-white border border-warning mb-2" 
             src="${img_url ?? "/img/default_user.png"}" 
@@ -173,22 +173,22 @@ function get_discussion_overview(discussion, author, content) {
     return `
         <li class="list-group-item bg-dark text-white border border-warning">
             <div class="row">
-                <div class="col">
-                    <h5>${discussion?.title}</h5>
+                <div class="col-lg-10 position-relative">
+                    <h5 class="position-absolute bottom-0 start-0 ms-3 mb-3">${discussion?.title}</h5>
                 </div>
-                <div class="col d-flex justify-content-end">
+                <div class="col-lg-2">
                     ${get_user_icon(author?.profile_img, author?._id)}
                 </div>
             </div>
             <div class="row">
-                <div class="col">
+                <div class="col-lg-10">
                     <p>${content?.content_paragraph}</p>
                 </div>
-                <div class="col">
-                    <div class="card" style="width= 12rem;">
-                        <img class="card-img-top" src="${discussion?.post_img ?? "img/logo.png"}">
-                        <div class="card-body">
-                            <button class="btn btn-warning col-lg-6 offset-lg-3" onclick="location.href='/discussion?post_id=${discussion?._id}'">Explore</button>
+                <div class="col-lg-2">
+                    <div class="card bg-warning">
+                        <img class="card-img-top" style="width= 12rem;" src="${discussion?.post_img ?? "img/logo.png"}">
+                        <div class="card-body m-0 p-0 pb-1">
+                            <button class="btn btn-dark col-lg-8 offset-lg-2" onclick="location.href='/discussion?post_id=${discussion?._id}'">Explore</button>
                             <!-- ADD CLAPS -->
                         </div>
                     </div>
