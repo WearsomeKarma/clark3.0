@@ -113,14 +113,17 @@ function get_user_icon(img_url, user_id) {
     `;
 }
 
-function fill_discussion_list(target, query, data_array)
+function fill_discussion_list(target, query, data_array, callback)
 {
     const target_element = $(target);
 
     $.getJSON('/get_discussions', {discussion_query: query})
     .done((data) => {
-        if (data.message !== 'success')
+        if (data.message !== 'success') {
+            if (callback)
+                callback(data.message);
             return;
+        }
 
         for(const discussion of data.discussions) {
             data_array?.append(discussion);
@@ -145,6 +148,9 @@ function fill_discussion_list(target, query, data_array)
                     });
             });
         }
+
+        if (callback)
+            callback(data.message);
     });
 }
 
@@ -198,22 +204,79 @@ function get_discussion_overview(discussion, author, content) {
     `;
 }
 
-function get_discussion_message(discussion_message) {
+async function query_user_icon(user_id) {
+    const get__user = await $.getJSON('/get_user', {user_id: user_id});
+    const user = get__user?.user;
+
+    return get_user_icon(user?.profile_img, user_id);
+}
+
+async function query_content(content_id) {
+    const get__content = await $.getJSON('/get_content', {content_id: discussion.root_content_id});
+    const content = get__content.content;
+
+    if (!content)
+        return content;
+
+    const user_id = content.user_id;
+    const user_icon = await query_user_icon(user_id);
+
+    return get_content_element(content, user_icon);
+}
+
+function get_content_element(content, user_icon) {
+    const video_id = 
+        content.video_url.substring
+        (
+            content.video_url.lastIndexOf('=')+1
+        );
     return `
-        <div class="row">
-            <!-- message contents -->
-            <div class="col">
-                <p>${discussion_message.content}</p>
+        <div class="row bg-dark text-white border border-warning">
+            <div class="col d-flex justify-content-end">
+                ${user_icon}
             </div>
-            <!-- message user info -->
-            <div class="col">
+            ${
+                !(content?.video_url) 
+                ? ''
+                : `
                 <div class="row">
-                    ${get_user_icon(discussion_message.user_img, discussion_message.user_id)}
+                    <iframe class="embed-responsive-item" style="width: 100%; height: 30rem;"
+                        src="https://www.youtube.com/embed/${video_id}" allowfullscreen></iframe>
                 </div>
-                <div class="row d-flex justify-content-center">
-                    <h5>${discussion_message.user_name}</h5>
+                `
+            }
+            ${
+                ((content?.content_paragraph?.length ?? 0) <= 0)
+                ? ''
+                : `
+                <div class="row">
+                    <p>${content.content_paragraph}<p>
                 </div>
-            </div>
+                `
+            }
         </div>
     `;
+}
+
+async function place_content(content_id){
+    const content = await GET_content(content_id);
+    const content_reply_id = content.reply_id;
+    const author_icon = await query_user_icon(content.user_id);
+
+    const content_element = get_content_element(content, author_icon);
+
+    if (content_reply_id) {
+        const target = $(`#content-${content_reply_id}`);
+        target.append(content_element);
+        return;
+    }
+
+    $('#comment_list').append(content_element);
+}
+
+async function GET_content(content_id, callback) {
+    const get__content = await $.getJSON('/get_content', {content_id: discussion.root_content_id});
+    if (callback)
+        callback(get__content.message, get__content.content);
+    return get__content.content;
 }
