@@ -73,12 +73,7 @@ const discussion_schema = new mongoose.Schema(
         root_content_id : {
             type: mongoose.ObjectId,
             unique: true
-        },
-        comment_content_ids : [
-            {
-                type: mongoose.ObjectId
-            }
-        ]
+        }
     }
 );
 
@@ -93,11 +88,17 @@ const content_schema = new mongoose.Schema(
         video_url : {
             type: String
         },
+        discussion_id : {
+            type : mongoose.ObjectId
+        }
         content_paragraph : {
             type: String,
             required: function() {
                 return this.content_paragraph.length >= 10;
             }
+        },
+        reply_id : {
+            type: mongoose.ObjectId
         }
     }
 );
@@ -288,34 +289,59 @@ app.post('/new_discussion', function(req, res) {
         content_paragraph: discussion_payload.content
     }
 
-    const content = new Content_Model(content_payload);
-    content.save(function (error) {
-        if (error) {
-            db_error = error;
-            console.log(error);
-            res.redirect('/new_discussion?error=' + error);
-        }
-
-        discussion_payload.root_content_id = content._id;
-        discussion_payload.comment_content_ids = [];
-
-        const discussion = new Discussion_Model(discussion_payload);
-        discussion.save(function (error) {
+    async function save_discussion(callback) {
+        const content = new Content_Model(content_payload);
+        await content.save(function (error) {
             if (error) {
-                db_error = error;
-                console.log(error);
-                res.redirect('/new_discussion?error=' + error);
+                if (callback)
+                    callback(error);
             }
 
-            res.redirect('/discussion?discussion_id=' + discussion._id);
+            discussion_payload.root_content_id = content._id;
+
+            const discussion = new Discussion_Model(discussion_payload);
+            await discussion.save(function (error) {
+                any_error = error;
+                if (error) {
+                    if (callback)
+                        callback(error);
+                }
+            });
         });
+    }
+
+    save_discussion((error) => {
+        if (error) {
+            console.log(error);
+            res.redirect('/new_discussion?error=' + error);
+            return;
+        }
+
+        res.redirect('/discussion?post_id=' + discussion._id);
     });
 });
-
 
 app.post('/post_reply', function(req, res) {
     if (assert_invalid_session(req, res))
         return;
+
+    const content_payload = {
+        user_id       : req.user._id,
+        video_url     : req.body.video_url,
+        discussion_id : req.body.discussion_id,
+        content       : req.body.content,
+        reply_id      : req.body.reply_id
+    };
+
+    const content = new Content_Model(content_payload);
+    content.save(function (error) {
+        if (error) {
+            res.redirect(`/topic?post_id=${req.body.discussion_id}&error=${error}`);
+            return;
+        }
+
+        res.redirect('/discussion?post_id' + req.body.discussion_id);
+    });
 });
 
 app.get('/get_discussion_by_id', function(req, res) {

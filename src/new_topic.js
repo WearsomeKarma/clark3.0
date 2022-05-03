@@ -59,12 +59,6 @@ $('#topic_form').on('submit', function() {
         return false;
     }
 
-    //construct discussion and validate on backend.
-    
-    const discussion = {
-        title: title,
-    }
-
     $('form').append(`<input name=author_id value=${user._id}>`);
 
     return true;
