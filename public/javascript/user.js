@@ -78,7 +78,17 @@ function load_form(user){
 
 //hide and show showcases
 const user_showcases = $("#user_showcases");
-fill_discussion_list(user_showcases, {author_id: user_id});
+const discussions = [];
+fill_discussion_list(user_showcases, {author_id: user_id}, discussions, function(){
+    if(discussions.length === 0){
+        user_showcases.append(get_discussion_overview(
+            {title: "Oops! Nothing to see here."},
+            {},
+            {content_paragraph: "Here, you can see the posts you have created. If you want something to show up, go to <a class='link_' href='/showcase'> Showcases</a> and make a post!"},
+        ))
+    }
+});
+
 
 //load settings
 $("#user_settings").append(get_settings_form());

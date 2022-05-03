@@ -90,7 +90,7 @@ const content_schema = new mongoose.Schema(
         },
         discussion_id : {
             type : mongoose.ObjectId
-        }
+        },
         content_paragraph : {
             type: String,
             required: function() {

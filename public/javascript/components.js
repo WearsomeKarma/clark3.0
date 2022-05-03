@@ -126,7 +126,7 @@ function fill_discussion_list(target, query, data_array, callback)
         }
 
         for(const discussion of data.discussions) {
-            data_array?.append(discussion);
+            data_array?.push(discussion);
             $.getJSON('/get_user', {user_id: discussion.author_id}, (data) => {
                 const author = data.user;
 
