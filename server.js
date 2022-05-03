@@ -138,20 +138,21 @@ app.post('/register', function(req, res){
     }
 
     Passport_User_Model.register(register, register.password, (error, user) => {
+
         if (error){
-            console.log("error - " + error);
+            console.log("passport error - " + error);
             fail_passport = error;
+
+            if(fail_passport){
+                user_gun.delete(register.username, register.password);
+                res.redirect("/register?error=" + error);
+            }
             return;
         }
+    
+        res.redirect('/');
     });
 
-    if(fail_passport){
-        user_gun.delete(register.username, register.password);
-        res.redirect('/register?error=' + fail_passport);
-        return;
-    }
-
-    res.redirect('/');
 });
 
 function assert_invalid_session(req, res) {
