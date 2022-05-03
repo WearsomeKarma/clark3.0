@@ -31,8 +31,7 @@ $('form').on('submit', function () {
 
     //*password
     let invalid = false;
-    if ( $('#password').val().length < 5 ){
-        errors.push("Password must be at least 5 characters!");
+    if ( $('#password').val().length < 8 ){
         $('#password').addClass("is-invalid text-danger");
         invalid = true;
     }
