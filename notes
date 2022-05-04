@@ -1,3 +1,11 @@
 after register - automatically login
 fix showcases toggle
 for new_discussion, when leaving focus of video_url - slide in an IFrame for the youtube video
+
+
+CSS-beautify the showcase components - (its a mess... code wise.)
+Add search bar functionality - this is just getJSON with a query object.
+Add discussion search numbers. So, show a max of 10 discussions, and the remainder
+    are accessed by a page index (1, 2, 3, 4, 5, ..., 10, 11)
+
+manage the post.send reception for replying on showcases

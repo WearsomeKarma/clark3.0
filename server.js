@@ -90,7 +90,7 @@ const content_schema = new mongoose.Schema(
         },
         discussion_id : {
             type : mongoose.ObjectId
-        }
+        },
         content_paragraph : {
             type: String,
             required: function() {
@@ -230,14 +230,10 @@ app.post('/user_edit', function(req, res) {
     if (req.body.profile_img) update_field.$set.profile_img = req.body.profile_img;
     console.log(update_field);
 
-    /*
     Passport_User_Model
-        .find({_id: user_id})
-        .update(update_field);
-    */
+        .update({_id: user_id}, update_field, function (error, user) 
 
-    Passport_User_Model
-        .updateMany({}, {$set: { profile_img: req.body.profile_img }});
+            {});
 
     res.redirect('/user?user_id=' + user_id);
 });
@@ -289,9 +285,9 @@ app.post('/new_discussion', function(req, res) {
         content_paragraph: discussion_payload.content
     }
 
-    async function save_discussion(callback) {
+    function save_discussion(callback) {
         const content = new Content_Model(content_payload);
-        await content.save(function (error) {
+        content.save(function (error) {
             if (error) {
                 if (callback)
                     callback(error);
@@ -300,7 +296,7 @@ app.post('/new_discussion', function(req, res) {
             discussion_payload.root_content_id = content._id;
 
             const discussion = new Discussion_Model(discussion_payload);
-            await discussion.save(function (error) {
+            discussion.save(function (error) {
                 any_error = error;
                 if (error) {
                     if (callback)
@@ -397,7 +393,7 @@ app.get('/get_discussions', function(req, res) {
         });
 });
 
-app.get('/get_content', function(req, res) {
+app.get('/get_content_by_id', function(req, res) {
     Content_Model
         .findOne({_id: req.query.content_id})
         .exec(function (error, content)
@@ -409,4 +405,46 @@ app.get('/get_content', function(req, res) {
 
                 res.send({message: 'success', content: content});
             });
+});
+
+app.get('/get_contents', function(req, res) {
+    const query = req.query;
+    Content_Model
+        .find(query ?? {})
+        .exec(function (error, contents) {
+            if (error) {
+                res.send({message: "database error", contents: {}});
+                return;
+            }
+
+            res.send({message: "success", contents: contents});
+        });
+});
+
+app.post('/post_content', function(req, res) {
+    const discussion_id = req.body.discussion_id;
+    const reply_id = req.body.reply_id;
+    const content_paragraph = req.body.content;
+
+    if (!discussion_id) {
+        res.send({message: 'database error'});
+        return;
+    }
+
+    const content_payload = {
+        user_id: req.user._id,
+        reply_id: reply_id,
+        discussion_id: discussion_id,
+        content_paragraph: content_paragraph
+    }
+
+    const content = new Content_Model(content_payload);
+    content.save((error) => {
+        if (error) {
+            res.send({message: error});
+            return;
+        }
+
+        res.send({message: 'success'});
+    });
 });

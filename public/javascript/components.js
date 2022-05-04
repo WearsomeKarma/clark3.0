@@ -1,3 +1,4 @@
+const default_profile_img = (location.origin + "/img/default_user.png");
 
 function apply_user_header(user) {
     apply_header(get_user_control(user));
@@ -101,12 +102,16 @@ function get_socials() {
 }
 
 function get_user_icon(img_url, user_id) {
+    const path = 
+        (img_url === '')
+        ? '/img/default_user.png'
+        : img_url;
     return `
     <a href="/user?user_id=${user_id}">
         <img style="width:full;"
             class=
             "profile_img main_background text-white border border-warning mb-2" 
-            src="${img_url ?? "/img/default_user.png"}" 
+            src="${path}" 
             onclick="location.href=/user?user_id=${user_id}"
         >
     </a>
@@ -130,7 +135,7 @@ function fill_discussion_list(target, query, data_array, callback)
             $.getJSON('/get_user', {user_id: discussion.author_id}, (data) => {
                 const author = data.user;
 
-                $.getJSON('/get_content', {content_id: discussion.root_content_id},
+                $.getJSON('/get_content_by_id', {content_id: discussion.root_content_id},
                     (data) => {
                         if (data.message !== 'success') {
                             return;
@@ -204,35 +209,43 @@ function get_discussion_overview(discussion, author, content) {
     `;
 }
 
-async function query_user_icon(user_id) {
+async function query_user_icon(user_id, callback) {
     const get__user = await $.getJSON('/get_user', {user_id: user_id});
     const user = get__user?.user;
+    const icon = get_user_icon(user?.profile_img, user_id);
 
-    return get_user_icon(user?.profile_img, user_id);
+    if (callback){
+        callback(icon);
+    }
+
+    return icon;
 }
 
-async function query_content(content_id) {
+async function query_content(content_id, callback) {
     const get__content = await $.getJSON('/get_content', {content_id: discussion.root_content_id});
     const content = get__content.content;
 
-    if (!content)
-        return content;
+    const content_element = 
+        content 
+        ? get_content_element(content)
+        : content;
 
-    const user_id = content.user_id;
-    const user_icon = await query_user_icon(user_id);
+    if (callback)
+        callback(content_element);
 
-    return get_content_element(content, user_icon);
+    return content_element;
 }
 
-function get_content_element(content, user_icon) {
+async function get_content_element(content, is_reply, callback) {
+    const user_icon = await query_user_icon(content.user_id);
     const video_id = 
-        content.video_url.substring
+        content?.video_url?.substring
         (
             content.video_url.lastIndexOf('=')+1
-        );
-    return `
+        ) ?? undefined;
+    const content_element = `
         <div class="row bg-dark text-white border border-warning">
-            <div class="col d-flex justify-content-end">
+            <div class="col d-flex justify-content-end p-3">
                 ${user_icon}
             </div>
             ${
@@ -254,24 +267,106 @@ function get_content_element(content, user_icon) {
                 </div>
                 `
             }
+            <div class="row p-3" id=reply-${content._id}>
+            </div>
+            ${
+                (is_reply)
+                ? ''
+                : `
+                    <div class="container ps-5 pe-5 pb-5" id=replies-${content._id}>
+                    </div>
+                `
+            }
         </div>
     `;
+
+    if (callback)
+        callback(content_element);
+
+    return content_element;
 }
 
-async function place_content(content_id){
-    const content = await GET_content(content_id);
-    const content_reply_id = content.reply_id;
-    const author_icon = await query_user_icon(content.user_id);
+function apply_content_reply(discussion_id, content_id, reply_id, reply_text) {
+    const element = `
+        <div class="content-reply row justify-content-end"> 
+            <div class="col-3 d-flex justify-content-end">
+                <button id=create_comment_id class="btn btn-info">${reply_text ?? 'Reply'}</button>
+            </div>
+        </div>
+    `;
 
-    const content_element = get_content_element(content, author_icon);
+    const target = `#reply-${content_id}`;
+    $(target).append(element);
+    $(`${target} .content-reply`).on('click', () => {
+        if ($(target).children().length > 1)
+            return;
+        apply_content_form(target, discussion_id, content_id, reply_id);
+    });
+}
 
-    if (content_reply_id) {
-        const target = $(`#content-${content_reply_id}`);
-        target.append(content_element);
-        return;
-    }
+function get_content_field(id) {
+    const id_form     = `${id}_reply_form`;
+    const id_textarea = `${id}_input_content`;
+    const id_error    = `${id}_form_error_content`;
+    const id_submit   = `${id}_button_submit`;
+    const id_cancel   = `${id}_button_cancel`;
 
-    $('#comment_list').append(content_element);
+    return { 
+        jq_id_form      : `#${id_form}`,
+        jq_id_textarea  : `#${id_textarea}`,
+        jq_id_error     : `#${id_error}`,
+        jq_id_submit    : `#${id_submit}`,
+        jq_id_cancel    : `#${id_cancel}`,
+        form: `
+        <form id=${id_form} action="/post_content" method="post">
+            <div class="row">
+                <input name="discussion_id" class="discussion-target d-none">
+                <input name="reply_id" class="reply-target d-none">
+                <label>Post</label>
+                <textarea
+                    id=${id_textarea}
+                    name=content
+                    class="form-control" 
+                    id="post_content" 
+                    rows="5"
+                ></textarea>
+            </div>
+            <div> <p id="${id_error}" class="error_message py-0 my-0"</p> </div>
+            <div class="row mt-4">
+                <button id=${id_submit} type="submit" class="btn btn-info col-2">Post</button>
+                <button id=${id_cancel} class="btn btn-danger col-2">Cancel</button>
+            </div>
+        </form>
+        `
+    };
+}
+
+function apply_content_form(target, discussion_id, source_id, reply_id) {
+    const field_desc =
+        get_content_field
+        (
+            source_id
+        );
+
+    const element =
+        field_desc.form;
+
+    $(target).append(element);
+
+    $(`${field_desc.jq_id_form} .discussion-target`).val(discussion_id);
+    $(`${field_desc.jq_id_form} .reply-target`).val(reply_id);
+
+    $(field_desc.jq_id_form).on('submit', function (){
+        if ($(field_desc.jq_id_textarea).val().length <= 10) {
+            $(field_desc.jq_id_error).text('Replies must be at least 10 characters long.');
+            return false;
+        }
+        return true;
+    });
+
+    $(field_desc.jq_id_cancel).on('click', function (){
+        $(field_desc.jq_id_form).remove();
+    });
 }
 
 async function GET_content(content_id, callback) {
