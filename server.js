@@ -422,6 +422,10 @@ app.get('/get_contents', function(req, res) {
 });
 
 app.post('/post_content', function(req, res) {
+    if (!req.isAuthenticated()) {
+        res.redirect('/login');
+        return;
+    }
     const discussion_id = req.body.discussion_id;
     const reply_id = req.body.reply_id;
     const content_paragraph = req.body.content;
