@@ -96,7 +96,7 @@ const content_schema = new mongoose.Schema(
 
 const Content_Model = mongoose.model('Content', content_schema);
 
-app.listen(process.env.PORT, function () {
+app.listen(process.env.PORT ?? 3000, function () {
     console.log("server started at 3000");
 });
 
