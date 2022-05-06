@@ -8,19 +8,8 @@ const passlocal = require('passport-local-mongoose');
 const bodyParser = require('body-parser');
 
 ///Configure GunJS and user schema
-require('gun-mongo');
 const gun = new Gun({
-    file: false,
-
-    mongo: {
-        host: 'localhost',
-        port: '27017',
-        username: null,
-        password: null,
-        database: 'gun',
-        collection: 'gun-mongo',
-        query: ''
-    }
+    file: false
 });    
 const user_gun = gun.user();
 
@@ -107,7 +96,7 @@ const content_schema = new mongoose.Schema(
 
 const Content_Model = mongoose.model('Content', content_schema);
 
-app.listen(3000, function () {
+app.listen(process.env.PORT, function () {
     console.log("server started at 3000");
 });
 
