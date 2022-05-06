@@ -9,7 +9,7 @@ if (error) {
 $("#email_length_error").hide();
 $("#email").on("change", function(){
     if ($(this).val().length < 5) {
-        $("#email_length_error").text("email has to be at least 5 characters");
+        $("#email_length_error").text("Email has to be at least 5 characters");
         $("#email_length_error").slideDown(300);
     }
     else {$("#email_length_error").hide();}

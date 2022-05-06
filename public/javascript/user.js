@@ -7,7 +7,6 @@ let current_user_id;
 $('#user_img').attr('src', ("/img/default_user.png"));
 $.getJSON("/get_current_user").done(function(data){
     current_user_id = data.user._id
-    console.log(data.user);
     if (data.user?.profile_img?.length ?? 0 > 0)
         $('#user_img').attr('src', (data.user?.profile_img));
 })

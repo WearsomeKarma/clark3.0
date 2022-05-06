@@ -228,7 +228,6 @@ app.post('/user_edit', function(req, res) {
     const user_id = req.user._id;
     const update_field = { $set: {}};
     if (req.body.profile_img) update_field.$set.profile_img = req.body.profile_img;
-    console.log(update_field);
 
     Passport_User_Model
         .update({_id: user_id}, update_field, function (error, user) 
@@ -261,7 +260,6 @@ app.get('/src/new_topic.js', function(req, res) {
 })
 
 app.post('/new_discussion', function(req, res) {
-    console.log('got post');
     if(!req.isAuthenticated()) {
         res.redirect('/login');
         return;
@@ -376,8 +374,6 @@ app.get('/get_discussions', function(req, res) {
     if (query.$and.length === 0)
         query = {};
 
-    console.log(query);
-
     Discussion_Model
         .find(query)
         .skip(skip ?? 0)
@@ -445,10 +441,10 @@ app.post('/post_content', function(req, res) {
     const content = new Content_Model(content_payload);
     content.save((error) => {
         if (error) {
-            res.send({message: error});
+            res.redirect(`/discussion?post_id=${discussion_id}&error=${error}`);
             return;
         }
 
-        res.send({message: 'success'});
+        res.redirect('/discussion?post_id=' + discussion_id);
     });
 });
