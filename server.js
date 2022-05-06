@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express   = require('express');
 const session   = require('express-session');
 const mongoose  = require('mongoose');
@@ -29,7 +30,7 @@ const app = express();
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
 app.use(session({
-    secret: "alongsecretonlyiknow_asdlfkhja465xzcew523",
+    secret: process.env.PASSPORT_SECRET,
     resave: false,
     saveUninitialized: false
 }));
@@ -39,7 +40,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //Configure MongoDB and Schema
-mongoose.connect('mongodb://localhost:27017/gun', {useNewUrlParser: true, useUnifiedTopology: true});
+const uri = process.env.MONGODB_URI;
+mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true});
 
 const user_schema = new mongoose.Schema(
     {
