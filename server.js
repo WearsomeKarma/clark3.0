@@ -376,7 +376,14 @@ app.get('/get_discussions', function(req, res) {
                 return;
             }
 
-            res.send({message: "success", discussions: discussions});
+            res.send
+            (
+                {
+                    message: "success", 
+                    discussions: discussions,
+                    page_count: (discussions.length / limit)
+                }
+            );
         });
 });
 

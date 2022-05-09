@@ -386,6 +386,22 @@ function apply_content_form(target, discussion_id, source_id, reply_id) {
     });
 }
 
+function get_showcase_page_bar
+    (
+        discussion_page_count,
+        index
+    ) {
+    //<i class="fa-solid fa-caret-right"></i>
+    //<i class="fa-solid fa-caret-left"></i>
+    //<i class="fa-solid fa-chevron-right"></i>
+    //<i class="fa-solid fa-chevron-left"></i>
+    //<i class="fa-solid fa-ellipsis"></i>
+    const min = (discussion_page_count - index < 5)
+        ? 0
+        : (index-5)
+        ;
+}
+
 async function GET_content(content_id, callback) {
     const get__content = await $.getJSON('/get_content', {content_id: discussion.root_content_id});
     if (callback)
