@@ -11,6 +11,10 @@
     background-color: var(--spanish-gray);
 }
 
+p {
+    width: fit-content
+}
+
 h2 {
     color: black;
 }

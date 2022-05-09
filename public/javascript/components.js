@@ -17,26 +17,43 @@ function get_user_control(user) {
 }
 
 function apply_header(user_control) {
+    $('nav').addClass('navbar navbar-expand-lg navbar-dark bg-dark main_background'); 
     $('nav').append(get_header(user_control));
-    $('nav').addClass('navbar navbar-expand-lg navbar-dark bg-dark main_background');
 }
 
 function get_header(user_control) {
     return `
         <img src="img/logo.png" style="width: 6rem;" class="mx-3">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
+        <button 
+            class="navbar-toggler me-2" 
+            type="button" 
+            data-bs-toggle="collapse" 
+            data-bs-target="#navbarNavAltMarkup" 
+            aria-controls="navbarNavAltMarkup" 
+            aria-expanded="false" 
+            aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-                <a class="nav-item nav-link active" href="/">Home</a>
-                <a class="nav-item nav-link" href="/showcase">Showcases</a>
-                <a class="nav-item nav-link" href="/get_started">Getting Started</a>
-                <a class="nav-item nav-link" href="contact">Contact Us</a>
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item active">
+                    <!-- This method of aligning the nav buttons is dumb but it works. -->
+                    <a class="nav-link d-flex align-items-center" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/showcase">Showcases</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/get_started">Getting Started</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="contact">Contact Us</a>
+                </li>
+            </ul>
+            <div id=user_control class="navbar-nav d-flex">
+                ${user_control}
             </div>
-        </div>
-        <div id=user_control class="navbar-nav navbar-right">
-            ${user_control}
         </div>
     `;
 }
@@ -87,7 +104,7 @@ function apply_socials(target, strategy) {
 function get_socials() {
     return `
             <div class="row">
-                <div class="col-md-4 offset-4 d-flex justify-content-center">
+                <div class="col-4 col-sm-4 col-md-4 offset-4 d-flex justify-content-center">
                     <div class="btn-group" role="group">
                         <a type="button" class="btn" href="https://twitter.com/marknadal">
                         <img src="img/twitter.svg" style="width: 3rem;"></a>
