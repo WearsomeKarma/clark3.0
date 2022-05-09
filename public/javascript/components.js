@@ -201,18 +201,18 @@ function get_discussion_overview(discussion, author, content) {
     return `
         <li class="list-group-item bg-dark text-white border border-warning">
             <div class="row">
-                <div class="col-lg-10 position-relative">
+                <div class="col-8 col-sm-8 col-md-9 col-lg-10 position-relative">
                     <h5 class="position-absolute bottom-0 start-0 ms-3 mb-3">${discussion?.title}</h5>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2">
                     ${get_user_icon(author?.profile_img, author?._id)}
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-10">
+                <div class="col-8 col-sm-8 col-md-9 col-lg-10">
                     <p>${content?.content_paragraph}</p>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-4 col-sm-4 col-md-3 col-lg-2">
                     <div class="card bg-warning">
                         <img class="card-img-top" style="width= 12rem;" src="${discussion?.post_img ?? "img/logo.png"}">
                         <div class="card-body m-0 p-0 pb-1">
@@ -351,7 +351,7 @@ function get_content_field(id) {
             <div> <p id="${id_error}" class="error_message py-0 my-0"</p> </div>
             <div class="row mt-4">
                 <button id=${id_submit} type="submit" class="btn btn-info col-2">Post</button>
-                <button id=${id_cancel} class="btn btn-danger col-2">Cancel</button>
+                <button id=${id_cancel} class="btn btn-danger col-3 col-sm-2">Cancel</button>
             </div>
         </form>
         `
