@@ -410,7 +410,7 @@ function get_page_bar(discussion_page_count, index, redirect_url) {
         max = index + 3;
     }
 
-    const page_bar_container = $(`<div class="d-flex justify-content-center"></div>`);
+    const page_bar_container = $(`<div class="page_index_div d-flex justify-content-center"></div>`);
     const page_bar = $(`<div class="page_index" style="display: inline-block"></div>`);
 
     function get_button(index, btn_class) {

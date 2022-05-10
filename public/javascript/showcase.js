@@ -9,6 +9,7 @@ let discussion_posts = [];
 
 function update_discussions(query){
     discussion_posts = [];
+    $('.page_index_div').remove();
     $('#discussions_list').empty();
     fill_discussion_list
     (
