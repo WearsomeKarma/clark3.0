@@ -393,7 +393,7 @@ function get_page_bar(discussion_page_count, index, redirect_url) {
     //<i class="fa-solid fa-chevron-left"></i>
     //<i class="fa-solid fa-ellipsis"></i>
 
-    if (discussion_page_count <= 1)
+    if (discussion_page_count < 2)
         return '';
 
     const expand_min = (index > 4);
