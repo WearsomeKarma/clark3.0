@@ -13,7 +13,19 @@ function update_discussions(query){
     fill_discussion_list
     (
         '#discussions_list',
-        query
+        query,
+        undefined,
+        (data) => {
+            if (data.message !== 'success') return;
+
+            const page_count = data.page_count ?? 0;
+            if (page_count <= 1) return;
+
+            const view = $('#list_view');
+            const redirect_url = '/showcase?page';
+            view.prepend(get_page_bar(page_count, query_page, redirect_url));
+            view.append(get_page_bar(page_count, query_page, redirect_url));
+        }
     );
 }
 

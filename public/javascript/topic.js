@@ -1,5 +1,8 @@
 const urlParams = new URLSearchParams(window.location.search);
 const discussion_id = urlParams.get("post_id");
+const page = urlParams.get("page") ?? 0;
+
+const discussion_url = `/discussion?post=_id=${discussion_id}`;
 
 let discussion = undefined;    
 let root_content = undefined;
@@ -46,11 +49,15 @@ async function update_comments(){
 
     const comments_list = $('#comment_list');
 
-    $.getJSON("/get_contents", {discussion_id: discussion_id}).done((data) => {
+    $.getJSON("/get_contents", {content_query: {discussion_id: discussion_id}}).done((data) => {
         if (data.message !== "success") {
             alert('database error');
             return;
         }
+
+        const comments = $('#comments');
+        comments.append(get_page_bar(data.page_count, page, `${discussion_url}&page`));
+        comments.prepend(get_page_bar(data.page_count, page, `${discussion_url}&page`));
 
         const late_contents = [];
 

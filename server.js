@@ -1,3 +1,5 @@
+const MAX_DB_QUERY = 100;
+
 require('dotenv').config();
 const express   = require('express');
 const session   = require('express-session');
@@ -61,6 +63,9 @@ const discussion_schema = new mongoose.Schema(
         title : {
             type: String
         },
+        date : {
+            type: Date
+        },
         root_content_id : {
             type: mongoose.ObjectId,
             unique: true
@@ -81,6 +86,9 @@ const content_schema = new mongoose.Schema(
         },
         discussion_id : {
             type : mongoose.ObjectId
+        },
+        date : {
+            type : Date
         },
         content_paragraph : {
             type: String,
@@ -260,6 +268,7 @@ app.post('/new_discussion', function(req, res) {
         author_id: req.body.author_id,
         title: req.body.title,
         video_url: req.body.video_url,
+        date : new Date(),
         content: req.body.content
     };
 
@@ -280,6 +289,7 @@ app.post('/new_discussion', function(req, res) {
             if (error) {
                 if (callback)
                     callback(error);
+                return;
             }
 
             discussion_payload.root_content_id = content._id;
@@ -287,15 +297,13 @@ app.post('/new_discussion', function(req, res) {
             const discussion = new Discussion_Model(discussion_payload);
             discussion.save(function (error) {
                 any_error = error;
-                if (error) {
-                    if (callback)
-                        callback(error);
-                }
+                if (callback)
+                    callback(error, discussion);
             });
         });
     }
 
-    save_discussion((error) => {
+    save_discussion((error, discussion) => {
         if (error) {
             console.log(error);
             res.redirect('/new_discussion?error=' + error);
@@ -315,6 +323,7 @@ app.post('/post_reply', function(req, res) {
         video_url     : req.body.video_url,
         discussion_id : req.body.discussion_id,
         content       : req.body.content,
+        date          : new Date(),
         reply_id      : req.body.reply_id
     };
 
@@ -353,8 +362,13 @@ app.get('/get_discussions', function(req, res) {
     const discussion_query = req.query.discussion_query;
 
     const author_id = discussion_query?.author_id;
-    const skip = discussion_query?.skip;
-    const limit = discussion_query?.limit;
+
+    const skip = discussion_query?.skip ?? 0;
+    if (skip < 0) skip = 0;
+
+    const limit = discussion_query?.limit ?? 10;
+    if (limit > MAX_DB_QUERY) limit = MAX_DB_QUERY;
+
     const search_text = discussion_query?.search_text;
 
     let query = { $and: []};
@@ -367,23 +381,28 @@ app.get('/get_discussions', function(req, res) {
 
     Discussion_Model
         .find(query)
-        .skip(skip ?? 0)
-        .limit(limit ?? 10)
-        .exec(function (error, discussions) {
-            if (error) {
-                console.log(error);
-                res.send({message: error, discussions: {}});
-                return;
-            }
+        .count({}, function (error, count) { 
+            Discussion_Model
+                .find(query)
+                .skip(skip)
+                .limit(limit)
+                .sort('date')
+                .exec(function (error, discussions) {
+                    if (error) {
+                        console.log(error);
+                        res.send({message: error, discussions: {}});
+                        return;
+                    }
 
-            res.send
-            (
-                {
-                    message: "success", 
-                    discussions: discussions,
-                    page_count: (discussions.length / limit)
-                }
-            );
+                    res.send
+                    (
+                        {
+                            message: "success", 
+                            discussions: discussions,
+                            page_count: (count / limit) + 1
+                        }
+                    );
+                });
         });
 });
 
@@ -403,15 +422,36 @@ app.get('/get_content_by_id', function(req, res) {
 
 app.get('/get_contents', function(req, res) {
     const query = req.query;
-    Content_Model
-        .find(query ?? {})
-        .exec(function (error, contents) {
-            if (error) {
-                res.send({message: "database error", contents: {}});
-                return;
-            }
 
-            res.send({message: "success", contents: contents});
+    const skip = query?.skip ?? 0;
+    if (skip < 0) skip = 0;
+
+    const limit = query?.limit ?? 10;
+    if (limit > MAX_DB_QUERY) limit = MAX_DB_QUERY;
+
+    Content_Model
+        .find(query.content_query ?? {})
+        .count({}, function(error, count) {
+            Content_Model
+                .find(query.content_query ?? {})
+                .skip(query.skip ?? 0)
+                .limit(query.limit ?? 10)
+                .sort('date')
+                .exec(function (error, contents) {
+                    if (error) {
+                        res.send({message: "database error", contents: {}});
+                        return;
+                    }
+
+                    res.send
+                    (
+                        {
+                            message: "success", 
+                            contents: contents,
+                            page_count: (count / limit) + 1
+                        }
+                    );
+                });
         });
 });
 
@@ -433,6 +473,7 @@ app.post('/post_content', function(req, res) {
         user_id: req.user._id,
         reply_id: reply_id,
         discussion_id: discussion_id,
+        date: new Date(),
         content_paragraph: content_paragraph
     }
 

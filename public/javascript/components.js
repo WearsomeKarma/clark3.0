@@ -143,7 +143,7 @@ function fill_discussion_list(target, query, data_array, callback)
     .done((data) => {
         if (data.message !== 'success') {
             if (callback)
-                callback(data.message);
+                callback(data);
             return;
         }
 
@@ -172,7 +172,7 @@ function fill_discussion_list(target, query, data_array, callback)
         }
 
         if (callback)
-            callback(data.message);
+            callback(data);
     });
 }
 
@@ -386,20 +386,59 @@ function apply_content_form(target, discussion_id, source_id, reply_id) {
     });
 }
 
-function get_showcase_page_bar
-    (
-        discussion_page_count,
-        index
-    ) {
+function get_page_bar(discussion_page_count, index, redirect_url) {
     //<i class="fa-solid fa-caret-right"></i>
     //<i class="fa-solid fa-caret-left"></i>
     //<i class="fa-solid fa-chevron-right"></i>
     //<i class="fa-solid fa-chevron-left"></i>
     //<i class="fa-solid fa-ellipsis"></i>
-    const min = (discussion_page_count - index < 5)
-        ? 0
-        : (index-5)
-        ;
+
+    if (discussion_page_count <= 1)
+        return '';
+
+    const expand_min = (index > 4);
+    const expand_max = (index + 5 < discussion_page_count);
+
+    let min = 0;
+    let max = discussion_page_count - 1;
+
+    if (expand_min) {
+        min = index - 3;
+    }
+
+    if (expand_max) {
+        max = index + 3;
+    }
+
+    const page_bar_container = $(`<div class="d-flex justify-content-center"></div>`);
+    const page_bar = $(`<div class="page_index" style="display: inline-block"></div>`);
+
+    function get_button(index, btn_class) {
+        const button = `
+            <a class="btn ${btn_class ?? 'btn-secondary'}" href="${redirect_url}=${index}">${index+1}</a>
+        `;
+        return button;
+    }
+
+    for(let i=min; i <= max; i++) {
+        const button = get_button(i, (i==index) ? 'btn-primary' : undefined);
+        page_bar.append(button);
+    }
+
+    if (expand_min) {
+        const start = get_button(0);
+        page_bar.prepend(`<i class="fa-solid fa-ellipsis"></i>`);
+        page_bar.prepend(start);
+    }
+
+    if (expand_max) {
+        const end = get_button(discussion_page_count-1);
+        page_bar.append(`<i class="fa-solid fa-ellipsis"></i>`);
+        page_bar.append(end);
+    }
+
+    page_bar_container.append(page_bar);
+    return page_bar_container;
 }
 
 async function GET_content(content_id, callback) {
